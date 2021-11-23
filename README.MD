@@ -6,9 +6,10 @@
     - public            | public asset
         |- images       | asset image
     - route             | route config
-    -src                | bisnis logic
+    - src               | bisnis logic
         |- book         | book => model, response, service
         |- user         | user => model, response, service
+    - utils             | utilities
 
 ## Was Implemented
     1.  CRUD
