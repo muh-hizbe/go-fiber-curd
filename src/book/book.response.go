@@ -3,11 +3,12 @@ package book
 import "time"
 
 type BookResponse struct {
-	ID int `json:"id"`
-	Title string `json:"title"`
-	Quantity int `json:"quantity"`
-	Author string `json:"author"`
-	Publisher string `json:"publisher"`
+	ID        int       `json:"id"`
+	Title     string    `json:"title"`
+	Image     string    `json:"image"`
+	Quantity  int       `json:"quantity"`
+	Author    string    `json:"author"`
+	Publisher string    `json:"publisher"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -16,6 +17,7 @@ func FormatBook(book Book) BookResponse {
 	formatter := BookResponse{}
 	formatter.ID = int(book.ID)
 	formatter.Title = book.Title
+	formatter.Image = book.Image
 	formatter.Quantity = book.Quantity
 	formatter.Author = book.Author
 	formatter.Publisher = book.Publisher

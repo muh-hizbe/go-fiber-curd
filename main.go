@@ -2,44 +2,26 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"go-fiber-crud/book"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"go-fiber-crud/database"
 	"go-fiber-crud/database/migration"
-	"go-fiber-crud/user"
+	"go-fiber-crud/route"
 )
 
-func helloWorld(c *fiber.Ctx) error {
-	return c.SendString("Hello world")
-}
-
-func Routers(app *fiber.App) {
-	apiRoute := app.Group("/api")
-	apiV1 := apiRoute.Group("/v1")
-
-	userRoute := apiV1.Group("/user")
-	bookRoute := apiV1.Group("/book")
-
-	// Route User V1
-	userRoute.Get("/all", user.GetUsers)
-	userRoute.Get("/:id", user.GetUser)
-	userRoute.Post("/", user.SaveUser)
-	userRoute.Delete("/:id", user.DeleteUser)
-	userRoute.Put("/:id", user.UpdateUser)
-
-	// Route BOOK V1
-	bookRoute.Get("/all", book.GetBooks)
-	bookRoute.Get("/:id", book.GetBook)
-	bookRoute.Post("/", book.SaveBook)
-	bookRoute.Delete("/:id", book.DeleteBook)
-	bookRoute.Put("/:id", book.UpdateBook)
-}
-
-
 func main() {
+	// Initial database connection
 	database.InitDatabase()
+	// Running migration db mysql
 	migration.RunMigration()
 
+	// Init Go Fiber
 	app := fiber.New()
+	// Set Cors Config
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "https://tabungkebaikan.org",
+		AllowMethods: "GET",
+	}))
+	// Set headers response
 	app.Use(func(c *fiber.Ctx) error {
 		c.Set("X-XSS-Protection", "1; mode=block")
 		c.Set("X-Content-Type-Options", "nosniff")
@@ -50,8 +32,12 @@ func main() {
 
 		return c.Next()
 	})
-	app.Get("/", helloWorld)
-	Routers(app)
 
-	app.Listen(":3000")
+	// Routing List
+	route.RoutesInit(app)
+
+	err := app.Listen(":3000")
+	if err != nil {
+		panic(err)
+	}
 }

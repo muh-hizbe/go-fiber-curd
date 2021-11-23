@@ -30,7 +30,14 @@ func SaveUser(c *fiber.Ctx) error {
 		return c.Status(500).SendString(err.Error())
 	}
 
-	database.DB.Create(&user)
+	newUser := database.DB.Create(&user)
+
+	if newUser.Error != nil {
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"status":  "error",
+			"message": "email already been taken",
+		})
+	}
 	return c.JSON(FormatUser(*user))
 }
 
@@ -44,7 +51,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(404).SendString("User Not Found.")
 	}
 
-	if err:= c.BodyParser(&user); err != nil {
+	if err := c.BodyParser(&user); err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
 
