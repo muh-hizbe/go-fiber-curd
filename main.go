@@ -18,7 +18,7 @@ func main() {
 	app := fiber.New()
 	// Set Cors Config
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "https://tabungkebaikan.org",
+		AllowOrigins: "*",
 		AllowMethods: "GET",
 	}))
 	// Set headers response
